@@ -13,9 +13,7 @@ IDs >= 0 and “virtual” devices with negative IDs like -1 (these
 and real hardware interrupts).
 """
 
-
 from typing import Callable, Optional, Collection, Union, Any
-
 
 IDLE = ...  # type: int
 SLEEP = ...  # type: int
@@ -26,7 +24,7 @@ HARD_RESET = ...  # type: int
 WDT_RESET = ...  # type: int
 DEEPSLEEP_RESET = ...  # type: int
 PIN_WAKE = ...  # type: int
-RTC_WAKE = ... # type: int
+RTC_WAKE = ...  # type: int
 
 
 class Pin(object):
@@ -386,7 +384,6 @@ class UART(object):
 
 
 class SPI(object):
-
     LSB = ...  # type: int
     MSB = ...  # type: int
 
@@ -683,9 +680,59 @@ class Timer(object):
         ...
 
 
+class PWM(object):
+
+    def __init__(self, id: Any, mode: int = -1, pull: int = -1, *,
+                 value: Optional[int] = None,
+                 freq: Optional[int] = None,
+                 duty: Optional[int] = None,
+                 ) -> None:
+        ...
+
+    def init(self, value: int):
+        ...
+
+    def deinit(self):
+        ...
+
+    def freq(self, value: Optional[int]) -> Optional[int]:
+        ...
+
+    def duty(self, value: Optional[int]) -> Optional[int]:
+        ...
+
+
+class ADC(object):
+    ATTN_0DB: int = 0
+    ATTN_2_5DB: int = 1
+    ATTN_6DB: int = 2
+    ATTN_11DB: int = 3
+
+    WIDTH_9BIT: int = 0
+    WIDTH_10BIT: int = 1
+    WIDTH_11BIT: int = 2
+    WIDTH_12BIT: int = 3
+
+    def __init__(self):
+        ...
+
+    def atten(self, atennuation: int):
+        ...
+
+    def width(self, width: int):
+        ...
+
+    def read(self) -> int:
+        ...
+
+    def read_u16(self) -> int:
+        ...
+
+
 def reset() -> None:
     """Resets the device in a manner similar to pushing the external RESET button."""
     ...
+
 
 def reset_cause() -> int:
     """Get the reset cause. Below are possible return values:
@@ -701,6 +748,7 @@ def reset_cause() -> int:
     """
     ...
 
+
 def disable_irq() -> int:
     """Disable interrupt requests. Returns the previous IRQ state which should
     be considered an opaque value. This return value should be passed to
@@ -712,6 +760,7 @@ def disable_irq() -> int:
     """
     ...
 
+
 def enable_irq(state: int) -> None:
     """Re-enable interrupt requests. The state parameter should be the value
     that was returned from the most recent call to the ``disable_irq`` function.
@@ -720,12 +769,14 @@ def enable_irq(state: int) -> None:
     """
     ...
 
+
 def freq() -> int:
     """
     Returns CPU frequency in hertz.
 
     :return: CPU frequency in hertz.
     """
+
 
 def idle() -> None:
     """Gates the clock to the CPU, useful to reduce power consumption at any time
@@ -734,11 +785,13 @@ def idle() -> None:
     system timer interrupt occurring at regular intervals on the order of millisecond).
     """
 
+
 def sleep() -> None:
     """Stops the CPU and disables all peripherals except for WLAN. Execution is
     resumed from the point where the sleep was requested. For wake up to
     actually happen, wake sources should be configured first.
     """
+
 
 def deepsleep() -> None:
     """Stops the CPU and all peripherals (including networking interfaces, if
@@ -747,6 +800,7 @@ def deepsleep() -> None:
     ``machine.DEEPSLEEP``. For wake up to actually happen, wake
     sources should be configured first, like Pin change or RTC timeout.
     """
+
 
 def wake_reason() -> int:
     """Get the wake reason. Possible values are:
@@ -759,6 +813,7 @@ def wake_reason() -> int:
     """
     ...
 
+
 def unique_id() -> bytearray:
     """
     Returns a byte string with a unique identifier of a board/SoC. It will
@@ -768,6 +823,7 @@ def unique_id() -> bytearray:
     :return: Unique identifier of a board/SoC.
     """
     ...
+
 
 def time_pulse_us(pin: Pin, pulse_level: int, timeout_us: int = 1000000) -> int:
     """
